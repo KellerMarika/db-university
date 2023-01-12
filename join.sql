@@ -84,7 +84,6 @@ INNER JOIN `course_teacher`
 INNER JOIN `teachers`
         ON `course_teacher`.`teacher_id`=`teachers`.`id`  
 ORDER BY `degrees_name` ASC;
-
 --6. Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54)
 SELECT
 `departments`.`name` AS `departments_name`,
@@ -114,8 +113,48 @@ ORDER BY
 
 --7. BONUS: Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esami
 
-FROM `exam_student`
-INNER JOIN `students`
-        ON `exam_student`.`student_id`=`students`.`id`  
+SELECT `students`.`name` as `student_name`,
+       `students`.`surname` as `student_surname`,
+       `exam_student`.`student_id`  AS `student_id`,
+       `exam_student`.`exam_id` AS `exam_id_par_student`,
+       `exam_student`.`vote`AS `students_vote`,
+       `exams`.`course_id` AS `course_id`
 
-GROUP BY `exam_student`.`exam_id`;
+FROM `students`
+INNER JOIN `exam_student`
+        ON `exam_student`.`student_id` = `students`.`id` 
+        
+INNER JOIN `exams`
+        ON `exams`.`id` = `exam_student`.`exam_id`
+        
+GROUP BY `student_id`,
+         `exam_id_par_student` 
+         HAVING `students_vote`< 18  
+ORDER BY `students_vote` ASC
+
+
+SELECT `students`.`name` as `student_name`,
+       `students`.`surname` as `student_surname`,
+       `exam_student`.`student_id`  AS `student_id`,
+       `exam_student`.`exam_id` AS `exam_id`,
+       `exam_student`.`vote`AS `students_vote`,
+       `exams`.`course_id` AS `course_id`,
+       COUNT(`exam_student`.`exam_id`) AS `exams_per_course_attempted_per_student`
+
+FROM `students`
+INNER JOIN `exam_student`
+        ON `exam_student`.`student_id` = `students`.`id` 
+        
+INNER JOIN `exams`
+        ON `exams`.`id` = `exam_student`.`exam_id` 
+      
+         
+GROUP BY `student_id`,
+          `course_id`,
+         `students_vote`,
+         `exam_id` 
+#HAVING ?         
+         
+ORDER BY `exams`.`course_id` ASC,
+         `students`.`id`,
+         `exams`.`id`;
