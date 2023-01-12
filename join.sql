@@ -1,6 +1,7 @@
 --1. Selezionare tutti gli studenti iscritti al Corso di Laurea in Economia
 
-SELECT `students`.`name` AS `student_name`,
+SELECT 
+`students`.`name` AS `student_name`,
 `students`.`surname` AS `student_surname`,
 `students`.`date_of_birth` AS `student_birth_date`,
 `students`.`fiscal_code` AS `student_fiscal_code`,
@@ -68,9 +69,10 @@ ORDER BY
 --5. Selezionare tutti i corsi di laurea con i relativi corsi e insegnanti
 
 SELECT 
-`degrees.name` AS `degrees_name`,
-`courses.name` AS `courses_name`,
-`teachers.name` as `Teachers_name`
+`degrees`.`name` AS `degrees_name`,
+`courses`.`name` AS `courses_name`,
+`teachers`.`surname` as `Teachers_surname`,
+`teachers`.`name` as `Teachers_name`
 
 FROM `degrees`
 INNER JOIN `courses`
@@ -81,14 +83,14 @@ INNER JOIN `course_teacher`
 
 INNER JOIN `teachers`
         ON `course_teacher`.`teacher_id`=`teachers`.`id`  
-ORDER BY `degrees_name` ASC
+ORDER BY `degrees_name` ASC;
 
 --6. Selezionare tutti i docenti che insegnano nel Dipartimento di Matematica (54)
 SELECT
 `departments`.`name` AS `departments_name`,
-`teachers.name` AS `Teachers_name`,
-`teachers.surname` AS `Teachers_surname`,
-`teachers.id` AS `Teachers_id`
+`teachers`.`name` AS `Teachers_name`,
+`teachers`.`surname` AS `Teachers_surname`,
+`teachers`.`id` AS `Teachers_id`
 
 FROM `degrees`
         
@@ -111,3 +113,9 @@ ORDER BY
 
 
 --7. BONUS: Selezionare per ogni studente quanti tentativi d’esame ha sostenuto per superare ciascuno dei suoi esami
+
+FROM `exam_student`
+INNER JOIN `students`
+        ON `exam_student`.`student_id`=`students`.`id`  
+
+GROUP BY `exam_student`.`exam_id`;
